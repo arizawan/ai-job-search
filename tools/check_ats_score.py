@@ -6,6 +6,9 @@ text layer, standard section headers, literal contact details, date coverage,
 and exact keyword coverage against target role families.
 
 Usage: python3 tools/check_ats_score.py cv/prep_resume/<file>.pdf
+
+Max score is 98 (weights sum: parseability 38, sections 15, dates 10,
+keywords 35); the printed score is normalized to 100.
 """
 import re
 import subprocess
@@ -40,7 +43,7 @@ FAMILIES = {
     ],
     "Backend": [
         "node.js", "python", "php", "postgresql", "api", "microservices",
-        "rest", "sql",
+        "rest", "sql", "full stack",
     ],
 }
 
@@ -106,7 +109,7 @@ def main(path: str) -> int:
             missing = [k for k in kws if not re.search(rf"\b{re.escape(k)}\b", low)]
             findings.append(f"{fam} keywords missing: {', '.join(missing)}")
 
-    print(f"ATS score: {score:.1f}/100  ({path})")
+    print(f"ATS score: {score / 98 * 100:.1f}/100  ({path})")
     for fam, (hit, total) in per_family.items():
         print(f"  {fam:15} {hit}/{total}")
     for f in findings:
